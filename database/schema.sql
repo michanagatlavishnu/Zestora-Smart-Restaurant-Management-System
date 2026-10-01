@@ -1,0 +1,123 @@
+-- Create tables for ZESTORA Restaurant Management System
+
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    phone VARCHAR(20),
+    password VARCHAR(255) NOT NULL,
+    role ENUM('ADMIN', 'MANAGER', 'CASHIER', 'WAITER', 'KITCHEN') NOT NULL,
+    status ENUM('ACTIVE', 'INACTIVE') DEFAULT 'ACTIVE',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS customers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NULL,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE,
+    phone VARCHAR(20) NOT NULL UNIQUE,
+    total_orders INT DEFAULT 0,
+    total_spending DECIMAL(10, 2) DEFAULT 0.00,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS menu_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    category_id INT NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    price DECIMAL(10, 2) NOT NULL,
+    image_url VARCHAR(255),
+    is_veg BOOLEAN DEFAULT TRUE,
+    is_spicy BOOLEAN DEFAULT FALSE,
+    prep_time INT DEFAULT 15, -- in minutes
+    is_available BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS restaurant_tables (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    table_number VARCHAR(20) NOT NULL UNIQUE,
+    capacity INT NOT NULL DEFAULT 4,
+    status ENUM('AVAILABLE', 'OCCUPIED', 'RESERVED', 'CLEANING') DEFAULT 'AVAILABLE',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_number VARCHAR(50) NOT NULL UNIQUE, -- e.g. ORD-20261001-001
+    customer_id INT NULL,
+    table_id INT NULL,
+    waiter_id INT NULL,
+    status ENUM('NEW', 'CONFIRMED', 'PREPARING', 'READY', 'SERVED', 'COMPLETED', 'CANCELLED') DEFAULT 'NEW',
+    subtotal DECIMAL(10, 2) DEFAULT 0.00,
+    discount DECIMAL(10, 2) DEFAULT 0.00,
+    tax DECIMAL(10, 2) DEFAULT 0.00,
+    service_charge DECIMAL(10, 2) DEFAULT 0.00,
+    total DECIMAL(10, 2) DEFAULT 0.00,
+    payment_status ENUM('PENDING', 'PAID', 'FAILED', 'REFUNDED') DEFAULT 'PENDING',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE SET NULL,
+    FOREIGN KEY (table_id) REFERENCES restaurant_tables(id) ON DELETE SET NULL,
+    FOREIGN KEY (waiter_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS order_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    menu_item_id INT NOT NULL,
+    quantity INT NOT NULL DEFAULT 1,
+    price DECIMAL(10, 2) NOT NULL,
+    special_instructions TEXT,
+    status ENUM('PENDING', 'PREPARING', 'READY', 'SERVED') DEFAULT 'PENDING',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    FOREIGN KEY (menu_item_id) REFERENCES menu_items(id)
+);
+
+CREATE TABLE IF NOT EXISTS payments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
+    payment_method ENUM('CASH', 'CARD', 'UPI') NOT NULL,
+    status ENUM('PENDING', 'PAID', 'FAILED', 'REFUNDED') DEFAULT 'PAID',
+    transaction_id VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS restaurant_settings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    restaurant_name VARCHAR(255) NOT NULL,
+    address TEXT,
+    phone VARCHAR(20),
+    email VARCHAR(255),
+    gst_percentage DECIMAL(5, 2) DEFAULT 5.00,
+    service_charge_percentage DECIMAL(5, 2) DEFAULT 10.00,
+    currency VARCHAR(10) DEFAULT 'INR',
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS notifications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    type VARCHAR(50) DEFAULT 'info', -- e.g., order, payment, system
+    is_read BOOLEAN DEFAULT FALSE,
+    target_roles VARCHAR(255) NULL, -- comma separated roles, or NULL for all
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
