@@ -20,6 +20,8 @@ const reportRoutes = require('./routes/reportRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const settingsRoutes = require('./routes/settingsRoutes');
 
+const db = require('./config/db');
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -83,6 +85,27 @@ app.get('/api/db-debug', async (req, res) => {
     result.error = err.message;
   }
   res.json(result);
+});
+
+app.get('/api/db-test', async (req, res) => {
+  try {
+    const [rows] = await db.query('SELECT 1 AS connected');
+    res.json({
+      mysqlConnected: true,
+      result: rows[0].connected,
+      error: null
+    });
+  } catch (err) {
+    res.json({
+      mysqlConnected: false,
+      error: {
+        code: err.code,
+        errno: err.errno,
+        sqlState: err.sqlState,
+        message: err.message
+      }
+    });
+  }
 });
 
 app.use('/api/auth', authRoutes);
