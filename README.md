@@ -33,15 +33,3 @@ A premium, fully-functional, real-time restaurant management platform built with
 1. Navigate to `/frontend`
 2. `npm install`
 3. `npm run dev` (Runs on port 5174)
-
-## Demo Credentials
-
-You can log in to the application using the following demo accounts (Password for all accounts is **password123**):
-
-- **Admin:** `admin@zestora.com`
-- **Manager:** `manager@zestora.com`
-- **Cashier:** `cashier@zestora.com`
-- **Waiter:** `waiter@zestora.com`
-- **Kitchen:** `kitchen@zestora.com`
-
-*Designed with a premium futuristic restaurant aesthetic.*
