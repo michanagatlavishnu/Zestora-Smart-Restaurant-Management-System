@@ -28,7 +28,7 @@ const Register = () => {
     setLoading(true);
     const success = await register(formData);
     if (success) {
-      navigate('/');
+      navigate('/order');
     }
     setLoading(false);
   };

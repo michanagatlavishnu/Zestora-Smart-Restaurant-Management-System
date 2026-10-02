@@ -56,7 +56,11 @@ function App() {
             <MainLayout />
           </ProtectedRoute>
         }>
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard" element={
+            <ProtectedRoute allowedRoles={['ADMIN', 'MANAGER']}>
+              <Dashboard />
+            </ProtectedRoute>
+          } />
           <Route path="/pos" element={
             <ProtectedRoute allowedRoles={['ADMIN', 'MANAGER', 'CASHIER', 'WAITER']}>
               <Pos />
