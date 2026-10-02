@@ -100,11 +100,6 @@ const Login = () => {
         </Link>
       </p>
       
-      <div className="mt-8 p-4 bg-amber-500/10 rounded-lg border border-amber-500/20 text-sm text-zinc-300">
-        <p className="font-semibold text-amber-500 mb-1">Demo Credentials:</p>
-        <p>Admin: admin@zestora.com / password123</p>
-        <p>Manager: manager@zestora.com / password123</p>
-      </div>
     </motion.div>
   );
 };
