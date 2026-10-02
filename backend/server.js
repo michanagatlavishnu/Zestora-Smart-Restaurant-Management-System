@@ -3,8 +3,6 @@ const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
 const helmet = require('helmet');
-const dns = require('dns');
-const net = require('net');
 require('dotenv').config();
 
 const authRoutes = require('./routes/authRoutes');
@@ -19,8 +17,6 @@ const paymentRoutes = require('./routes/paymentRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const settingsRoutes = require('./routes/settingsRoutes');
-
-const db = require('./config/db');
 
 const app = express();
 const server = http.createServer(app);
@@ -39,73 +35,6 @@ app.use(express.json());
 app.use((req, res, next) => {
   req.io = io;
   next();
-});
-
-app.get('/api/db-debug', async (req, res) => {
-  const host = process.env.DB_HOST || 'localhost';
-  const port = Number(process.env.DB_PORT || 3306);
-  const result = {
-    host,
-    port,
-    dnsResolved: false,
-    dnsAddress: null,
-    tcpConnected: false,
-    error: null
-  };
-
-  try {
-    const address = await new Promise((resolve, reject) => {
-      dns.lookup(host, (err, address) => {
-        if (err) reject(err);
-        else resolve(address);
-      });
-    });
-    result.dnsAddress = address;
-    result.dnsResolved = true;
-
-    await new Promise((resolve, reject) => {
-      const socket = new net.Socket();
-      socket.setTimeout(5000);
-      socket.on('connect', () => {
-        socket.destroy();
-        resolve(true);
-      });
-      socket.on('timeout', () => {
-        socket.destroy();
-        reject(new Error('TCP connection timed out'));
-      });
-      socket.on('error', (err) => {
-        socket.destroy();
-        reject(err);
-      });
-      socket.connect(port, host);
-    });
-    result.tcpConnected = true;
-  } catch (err) {
-    result.error = err.message;
-  }
-  res.json(result);
-});
-
-app.get('/api/db-test', async (req, res) => {
-  try {
-    const [rows] = await db.query('SELECT 1 AS connected');
-    res.json({
-      mysqlConnected: true,
-      result: rows[0].connected,
-      error: null
-    });
-  } catch (err) {
-    res.json({
-      mysqlConnected: false,
-      error: {
-        code: err.code,
-        errno: err.errno,
-        sqlState: err.sqlState,
-        message: err.message
-      }
-    });
-  }
 });
 
 app.use('/api/auth', authRoutes);
