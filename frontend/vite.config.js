@@ -8,4 +8,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  preview: {
+    allowedHosts: ['zestora-frontend.onrender.com']
+  }
 })
