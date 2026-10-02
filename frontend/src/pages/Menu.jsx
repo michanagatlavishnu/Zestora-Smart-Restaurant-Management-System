@@ -39,7 +39,11 @@ const Menu = () => {
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = activeCategory === 'All' || item.category_name === activeCategory;
     return matchesSearch && matchesCategory;
-  });
+  })
+    .sort((a, b) => {
+      if (a.category_id !== b.category_id) return (a.category_id || 0) - (b.category_id || 0);
+      return Number(a.price || 0) - Number(b.price || 0);
+    });
 
   if (loading) {
     return <div className="flex h-full items-center justify-center">Loading...</div>;
@@ -123,7 +127,7 @@ const Menu = () => {
                   <div className="p-4 flex flex-col flex-1">
                     <div className="flex justify-between items-start mb-1">
                       <h3 className="font-semibold text-white line-clamp-1" title={item.name}>{item.name}</h3>
-                      <span className="text-amber-500 font-bold shrink-0">${item.price}</span>
+                      <span className="text-amber-500 font-bold shrink-0">₹{item.price}</span>
                     </div>
                     <p className="text-xs text-zinc-400 mb-4 line-clamp-2">{item.description}</p>
                     

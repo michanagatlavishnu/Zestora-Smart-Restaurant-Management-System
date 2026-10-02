@@ -129,7 +129,7 @@ const Orders = () => {
                     </td>
                     <td className="px-4 py-3 text-zinc-300">{order.customer_name || 'Guest'}</td>
                     <td className="px-4 py-3 text-zinc-300">Table {order.table_id || 'N/A'}</td>
-                    <td className="px-4 py-3 font-medium text-white">${order.total}</td>
+                    <td className="px-4 py-3 font-medium text-white">₹{order.total}</td>
                     <td className="px-4 py-3">
                       <span className={`px-2.5 py-1 rounded-md text-xs font-semibold border ${getStatusColor(order.status)}`}>
                         {order.status}

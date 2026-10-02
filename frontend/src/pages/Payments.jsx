@@ -93,7 +93,7 @@ const Payments = () => {
                     </td>
                     <td className="px-6 py-4 font-medium text-white">{payment.order_number}</td>
                     <td className="px-6 py-4 text-zinc-300">{payment.customer_name || 'Guest'}</td>
-                    <td className="px-6 py-4 text-amber-500 font-bold">${payment.amount}</td>
+                    <td className="px-6 py-4 text-amber-500 font-bold">₹{payment.amount}</td>
                     <td className="px-6 py-4">
                       <span className="bg-zinc-800 text-zinc-300 px-2.5 py-1 rounded-md text-xs font-semibold">
                         {payment.payment_method}

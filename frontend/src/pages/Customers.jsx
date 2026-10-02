@@ -190,8 +190,7 @@ const CustomerModal = ({ customerId, onClose }) => {
                                         <div className="text-xs text-amber-500/80 mt-1 italic">Note: {item.special_instructions}</div>
                                       )}
                                     </div>
-                                    <div className="font-semibold text-white">
-                                      ${(Number(item.quantity) * Number(item.price)).toFixed(2)}
+                                    <div className="font-semibold text-white">₹{(Number(item.quantity) * Number(item.price)).toFixed(2)}
                                     </div>
                                   </div>
                                 ))}
@@ -249,8 +248,7 @@ const CustomerModal = ({ customerId, onClose }) => {
                                       <div className="text-xs text-zinc-400 mt-0.5 italic">"{item.special_instructions}"</div>
                                     )}
                                   </div>
-                                  <div className="text-sm font-medium text-zinc-300">
-                                    ${(Number(item.quantity) * Number(item.price)).toFixed(2)}
+                                  <div className="text-sm font-medium text-zinc-300">₹{(Number(item.quantity) * Number(item.price)).toFixed(2)}
                                   </div>
                                 </div>
                               ))}
@@ -399,8 +397,7 @@ const Customers = () => {
                     <td className="px-6 py-4 text-center text-zinc-300 font-medium">
                       {customer.calc_total_orders || customer.total_orders || 0}
                     </td>
-                    <td className="px-6 py-4 text-right text-amber-500 font-bold">
-                      ${Number(customer.calc_total_spending || customer.total_spending || 0).toFixed(2)}
+                    <td className="px-6 py-4 text-right text-amber-500 font-bold">₹{Number(customer.calc_total_spending || customer.total_spending || 0).toFixed(2)}
                     </td>
                     <td className="px-6 py-4 text-zinc-400 text-sm">
                       {customer.last_order_date ? format(new Date(customer.last_order_date), 'MMM dd, yyyy') : 'N/A'}

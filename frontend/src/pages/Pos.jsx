@@ -26,19 +26,48 @@ const Pos = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      // Create explicit full URLs to guarantee we hit the correct endpoints regardless of global axios config
+      const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+      
       try {
-        const [menuRes, catRes, tableRes] = await Promise.all([
-          axios.get('/menu'),
-          axios.get('/menu/categories'),
-          axios.get('/tables')
+        const [menuResult, catResult, tableResult] = await Promise.allSettled([
+          axios.get(`${baseURL}/menu`),
+          axios.get(`${baseURL}/menu/categories`),
+          axios.get(`${baseURL}/tables`)
         ]);
-        // Filter only available items
-        setMenuItems(menuRes.data.filter(item => item.is_available));
-        setCategories(catRes.data);
-        // Filter only available tables
-        setTables(tableRes.data.filter(t => t.status === 'AVAILABLE'));
+
+        // 1. Handle Menu Items (Critical)
+        if (menuResult.status === 'fulfilled') {
+          const mData = Array.isArray(menuResult.value.data) ? menuResult.value.data : (menuResult.value.data?.data || []);
+          setMenuItems(mData.filter(item => item.is_available));
+          console.log('[POS Diagnostics] Menu Status: SUCCESS, Shape:', Array.isArray(menuResult.value.data) ? 'Array' : 'Object', 'Count:', mData.length);
+        } else {
+          console.error('[POS Diagnostics] Menu Status: FAILED', menuResult.reason?.message);
+          toast.error('Failed to load menu data');
+        }
+
+        // 2. Handle Categories (Fallback to 'All')
+        if (catResult.status === 'fulfilled') {
+          const cData = Array.isArray(catResult.value.data) ? catResult.value.data : (catResult.value.data?.data || []);
+          setCategories(cData);
+          console.log('[POS Diagnostics] Categories Status: SUCCESS, Count:', cData.length);
+        } else {
+          console.warn('[POS Diagnostics] Categories Status: FAILED', catResult.reason?.message);
+          // Categories will remain empty, UI handles fallback to 'All Items'
+        }
+
+        // 3. Handle Tables
+        if (tableResult.status === 'fulfilled') {
+          const tData = Array.isArray(tableResult.value.data) ? tableResult.value.data : (tableResult.value.data?.data || []);
+          setTables(tData.filter(t => t.status === 'AVAILABLE'));
+          console.log('[POS Diagnostics] Tables Status: SUCCESS, Count:', tData.length);
+        } else {
+          console.error('[POS Diagnostics] Tables Status: FAILED', tableResult.reason?.message);
+          toast.error('Failed to load tables. Please refresh or contact admin.');
+        }
+
       } catch (error) {
-        toast.error('Failed to load menu data');
+        console.error('[POS Diagnostics] Fatal fetch error:', error);
       } finally {
         setLoading(false);
       }
@@ -50,7 +79,11 @@ const Pos = () => {
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = activeCategory === 'All' || item.category_name === activeCategory;
     return matchesSearch && matchesCategory;
-  });
+  })
+    .sort((a, b) => {
+      if (a.category_id !== b.category_id) return (a.category_id || 0) - (b.category_id || 0);
+      return Number(a.price || 0) - Number(b.price || 0);
+    });
 
   const addToCart = (item) => {
     const existing = cart.find(c => c.id === item.id);
@@ -203,7 +236,7 @@ const Pos = () => {
                     </button>
                   </div>
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-amber-500 font-semibold text-sm">${item.price}</span>
+                    <span className="text-amber-500 font-semibold text-sm">₹{item.price}</span>
                     <div className="flex items-center gap-3 bg-zinc-900 rounded-lg p-1 border border-white/10">
                       <button onClick={() => updateQuantity(item.id, -1)} className="p-1 hover:bg-white/10 rounded">
                         <Minus size={14} className="text-zinc-400" />
@@ -235,7 +268,7 @@ const Pos = () => {
         <div className="p-4 border-t border-white/5 bg-zinc-900/80">
           <div className="flex justify-between items-center mb-4 text-lg">
             <span className="font-semibold text-zinc-300">Total</span>
-            <span className="font-bold text-amber-500">${cartTotal.toFixed(2)}</span>
+            <span className="font-bold text-amber-500">₹{cartTotal.toFixed(2)}</span>
           </div>
           <button 
             onClick={placeOrder}

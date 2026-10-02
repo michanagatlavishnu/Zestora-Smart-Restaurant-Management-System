@@ -85,7 +85,7 @@ const Dashboard = () => {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
-        <StatCard title="Today's Sales" value={`$${stats.todaySales}`} icon={IndianRupee} color="amber" delay={0.1} />
+        <StatCard title="Today's Sales" value={`₹${stats.todaySales}`} icon={IndianRupee} color="amber" delay={0.1} />
         <StatCard title="Today's Orders" value={stats.todayOrders} icon={ShoppingBag} color="blue" delay={0.2} />
         <StatCard title="Pending Orders" value={stats.pendingOrders} icon={Clock} color="orange" delay={0.3} />
         <StatCard title="Completed" value={stats.completedOrders} icon={CheckCircle} color="green" delay={0.4} />
@@ -113,7 +113,7 @@ const Dashboard = () => {
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" vertical={false} />
                 <XAxis dataKey="date" stroke="#A1A1AA" tick={{fill: '#A1A1AA'}} tickLine={false} axisLine={false} />
-                <YAxis stroke="#A1A1AA" tick={{fill: '#A1A1AA'}} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} />
+                <YAxis stroke="#A1A1AA" tick={{fill: '#A1A1AA'}} tickLine={false} axisLine={false} tickFormatter={(value) => `₹${value}`} />
                 <Tooltip 
                   contentStyle={{ backgroundColor: '#18181B', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px' }}
                   itemStyle={{ color: '#F59E0B' }}
@@ -152,7 +152,7 @@ const Dashboard = () => {
                     <tr key={order.id} className="border-b border-white/5 last:border-0 hover:bg-white/[0.02] transition-colors">
                       <td className="py-3 font-medium text-white">{order.order_number}</td>
                       <td className="py-3 text-zinc-300">Table {order.table_id}</td>
-                      <td className="py-3 text-zinc-300">${order.total}</td>
+                      <td className="py-3 text-zinc-300">₹{order.total}</td>
                       <td className="py-3">
                         <span className={`px-2 py-1 rounded text-xs font-medium bg-zinc-800 ${
                           order.status === 'COMPLETED' ? 'text-green-500' :

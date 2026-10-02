@@ -48,7 +48,11 @@ const CustomerMenu = () => {
     const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()));
     return matchesCat && matchesSearch;
-  });
+  })
+    .sort((a, b) => {
+      if (a.category_id !== b.category_id) return (a.category_id || 0) - (b.category_id || 0);
+      return Number(a.price || 0) - Number(b.price || 0);
+    });
 
   const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 

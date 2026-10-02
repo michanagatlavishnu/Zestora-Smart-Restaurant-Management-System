@@ -58,7 +58,7 @@ const Reports = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="glass p-6 rounded-2xl border-white/5">
           <p className="text-zinc-400 text-sm font-medium mb-1">Total Revenue</p>
-          <h3 className="text-3xl font-bold text-white">${reportData.totalRevenue || 0}</h3>
+          <h3 className="text-3xl font-bold text-white">₹{reportData.totalRevenue || 0}</h3>
         </div>
         <div className="glass p-6 rounded-2xl border-white/5">
           <p className="text-zinc-400 text-sm font-medium mb-1">Total Orders</p>
@@ -66,7 +66,7 @@ const Reports = () => {
         </div>
         <div className="glass p-6 rounded-2xl border-white/5">
           <p className="text-zinc-400 text-sm font-medium mb-1">Avg. Order Value</p>
-          <h3 className="text-3xl font-bold text-white">${reportData.avgOrderValue || 0}</h3>
+          <h3 className="text-3xl font-bold text-white">₹{reportData.avgOrderValue || 0}</h3>
         </div>
         <div className="glass p-6 rounded-2xl border-white/5">
           <p className="text-zinc-400 text-sm font-medium mb-1">Total Customers</p>

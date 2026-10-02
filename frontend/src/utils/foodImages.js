@@ -16,6 +16,7 @@ import chicken_zinger_burger from '../assets/food/chicken-zinger-burger.jpg';
 import chilli_chicken from '../assets/food/chilli-chicken.jpg';
 import chocolate_brownie from '../assets/food/chocolate-brownie.jpg';
 import cold_coffee from '../assets/food/cold-coffee.jpg';
+import mojito from '../assets/food/mojito.jpg';
 import crispy_corn from '../assets/food/crispy-corn.jpg';
 import crispy_veg_burger from '../assets/food/crispy-veg-burger.jpg';
 import dal_makhani from '../assets/food/dal-makhani.jpg';
@@ -71,6 +72,7 @@ const foodImages = {
   'chilli-chicken': chilli_chicken,
   'chocolate-brownie': chocolate_brownie,
   'cold-coffee': cold_coffee,
+  'mojito': mojito,
   'crispy-corn': crispy_corn,
   'crispy-veg-burger': crispy_veg_burger,
   'dal-makhani': dal_makhani,

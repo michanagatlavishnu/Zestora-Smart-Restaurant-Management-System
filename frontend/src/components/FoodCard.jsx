@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Button from './Button';
 import { getFoodImage } from '../utils/foodImages';
 import toast from 'react-hot-toast';
-import { Clock, Flame, Star, ThumbsUp } from 'lucide-react';
+import { Clock, Flame, Star, ThumbsUp, Utensils } from 'lucide-react';
 
 const FoodCard = ({ item, onAdd }) => {
-  const imgSrc = getFoodImage(item.name) || 'https://via.placeholder.com/400x300/18181B/F59E0B?text=No+Image';
+  const [imgError, setImgError] = useState(false);
+  const imgSrc = getFoodImage(item.name);
 
-  const [quantity, setQuantity] = React.useState(1);
+  const [quantity, setQuantity] = useState(1);
 
   const handleAdd = (e) => {
     e.preventDefault();
@@ -23,13 +24,20 @@ const FoodCard = ({ item, onAdd }) => {
       whileHover={{ y: -4 }}
       className="glass rounded-xl overflow-hidden border border-white/10 flex flex-col h-full shadow-lg relative bg-white/5"
     >
-      <div className="relative h-48 w-full overflow-hidden bg-zinc-900">
-        <img 
-          src={imgSrc} 
-          alt={item.name}
-          className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity duration-300"
-          onError={(e) => { e.target.src = 'https://via.placeholder.com/400x300/18181B/F59E0B?text=No+Image'; }}
-        />
+      <div className="relative h-48 w-full overflow-hidden bg-zinc-900 flex items-center justify-center">
+        {(!imgSrc || imgError) ? (
+          <div className="flex flex-col items-center justify-center text-zinc-600 opacity-50">
+            <Utensils size={48} className="mb-2" />
+            <span className="text-xs font-semibold tracking-wider uppercase">No Image</span>
+          </div>
+        ) : (
+          <img 
+            src={imgSrc} 
+            alt={item.name}
+            className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity duration-300"
+            onError={() => setImgError(true)}
+          />
+        )}
         <div className="absolute top-2 left-2 flex flex-col gap-1">
           {item.is_popular && (
             <span className="bg-amber-500 text-zinc-950 text-xs font-bold px-2 py-1 rounded shadow flex items-center gap-1">

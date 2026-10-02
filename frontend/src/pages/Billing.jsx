@@ -86,7 +86,7 @@ const Billing = () => {
             >
               <div className="flex justify-between items-center mb-2">
                 <span className="font-bold text-white">{order.order_number}</span>
-                <span className="text-amber-500 font-bold">${order.total}</span>
+                <span className="text-amber-500 font-bold">₹{order.total}</span>
               </div>
               <div className="flex justify-between items-center text-sm text-zinc-400">
                 <span>Table {order.table_id || 'N/A'}</span>
@@ -156,8 +156,8 @@ const Billing = () => {
                       <tr key={idx} className="border-b border-white/5">
                         <td className="py-3 text-white">{item.name}</td>
                         <td className="py-3 text-center text-zinc-300">{item.quantity}</td>
-                        <td className="py-3 text-right text-zinc-300">${item.price}</td>
-                        <td className="py-3 text-right text-white font-medium">${(item.quantity * item.price).toFixed(2)}</td>
+                        <td className="py-3 text-right text-zinc-300">₹{item.price}</td>
+                        <td className="py-3 text-right text-white font-medium">₹{(item.quantity * item.price).toFixed(2)}</td>
                       </tr>
                     ))
                   ) : (
@@ -171,7 +171,7 @@ const Billing = () => {
               <div className="w-full max-w-sm ml-auto space-y-3 text-sm">
                 <div className="flex justify-between text-zinc-400">
                   <span>Subtotal</span>
-                  <span>${selectedOrder.subtotal}</span>
+                  <span>₹{selectedOrder.subtotal}</span>
                 </div>
                 <div className="flex justify-between text-zinc-400">
                   <span>Discount</span>
@@ -187,7 +187,7 @@ const Billing = () => {
                 </div>
                 <div className="flex justify-between text-white font-bold text-lg pt-3 border-t border-white/10">
                   <span>Grand Total</span>
-                  <span className="text-amber-500">${selectedOrder.total}</span>
+                  <span className="text-amber-500">₹{selectedOrder.total}</span>
                 </div>
               </div>
               
